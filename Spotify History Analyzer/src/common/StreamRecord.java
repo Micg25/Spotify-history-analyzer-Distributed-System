@@ -1,5 +1,4 @@
 package common;
-
 import java.io.Serializable;
 
 public class StreamRecord implements Serializable{
@@ -26,4 +25,8 @@ public class StreamRecord implements Serializable{
     public String offline_timestamp;
     public Boolean incognito_mode;
     
+@Override
+    public String toString() {
+        return "Canzone: " + master_metadata_track_name + " - " + ms_played + "ms";
+    }
 }
