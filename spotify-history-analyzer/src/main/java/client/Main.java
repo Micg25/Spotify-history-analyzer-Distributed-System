@@ -1,11 +1,16 @@
 package client;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
+
+import common.StreamRecord;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,17 +35,41 @@ public class Main {
         File[] listOfFiles = folder.listFiles();
         List<String> targetFiles = new ArrayList<>();
         int totalSongs=0;
+        List<StreamRecord> filteredSongs = new ArrayList<>();
         System.out.println("Sono stati trovati "+listOfFiles.length+" file");
         if(listOfFiles != null){
             for (int i=0; i<listOfFiles.length; i++){     
                 if(listOfFiles[i].getName().startsWith("Streaming_History_Audio_") && listOfFiles[i].getName().contains(String.valueOf(anno))){
                     targetFiles.add(listOfFiles[i].getName());
+                    try(Reader reader = new FileReader(listOfFiles[i].getAbsolutePath())){
+                        StreamRecord[] records = gson.fromJson(reader, StreamRecord[].class);
+
+                        if(records != null){
+                            Collections.addAll(filteredSongs, records);  // oppure  
+                                                                         // import java.util.Arrays; // <--- Serve questo import
+                                                                         // Invece di Collections.addAll(filteredSongs, records);
+                                                                         //System.out.println(records[0]);
+                        }
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    
+                    //System.out.println(filteredSongs);
                 }
-                else{
+                    else{
                     continue;
                 }
             }
         }
+        System.out.println("TOTALE: "+filteredSongs.size());
+        for (int i=0; i<filteredSongs.size();i++){
+            if(!filteredSongs.get(i).ts.startsWith(String.valueOf(anno))){
+               filteredSongs.remove(i);
+            } 
+        }
+        System.out.println("Nel "+anno+" hai ascoltato "+filteredSongs.size());
+
         System.out.println(targetFiles);
         
         //String filePath = "Spotify Extended Streaming History/Streaming_History_Audio_%d-2020_0.json".formatted(anno);
