@@ -11,6 +11,7 @@ public class Server {
     public static void main(String[] args) {
         try{
         SpotifyServiceImpl obj = new SpotifyServiceImpl(); 
+        
         SpotifyService stub = (SpotifyService) UnicastRemoteObject.exportObject(obj, 0, null, null);
         
         Registry registry = LocateRegistry.createRegistry(1099);

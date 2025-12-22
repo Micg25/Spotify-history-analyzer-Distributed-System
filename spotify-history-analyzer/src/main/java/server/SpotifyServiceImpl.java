@@ -8,7 +8,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 import com.google.gson.Gson;
 
@@ -24,18 +23,18 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
     public List<StreamRecordDTO> getSongsByYear(int anno){
         
         Gson gson = new Gson();
-        
         String folderPath = "Spotify Extended Streaming History";
         File folder = new File (folderPath);
+        List<StreamRecordDTO> filteredSongs = new ArrayList<>();
+
         if(!folder.exists() || !folder.isDirectory()){
             System.out.println("Errore: Cartella non trovata: " + folder.getAbsolutePath());
-            return;
+            return filteredSongs;
         }
         File[] listOfFiles = folder.listFiles();
         List<String> targetFiles = new ArrayList<>();
-        int totalSongs=0;
-        List<StreamRecordDTO> filteredSongs = new ArrayList<>();
         System.out.println("Sono stati trovati "+listOfFiles.length+" file");
+        
         if(listOfFiles != null){
             for (int i=0; i<listOfFiles.length; i++){     
                 if(listOfFiles[i].getName().startsWith("Streaming_History_Audio_") && listOfFiles[i].getName().contains(String.valueOf(anno))){
@@ -62,6 +61,6 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
             }
         }
         System.out.println("TOTALE: "+filteredSongs.size());
-        
+        return filteredSongs;
     }
 }
