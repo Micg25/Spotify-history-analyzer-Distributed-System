@@ -8,37 +8,70 @@ import java.util.Scanner;
 import common.SpotifyService;
 import common.StreamRecordDTO;
 
+
 public class Main {
     public static void main(String[] args) {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost",1099);
-            
+            // 1. Connessione RMI
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
             SpotifyService stub = (SpotifyService) registry.lookup("Spotifyservice");
-            Scanner input = new Scanner(System.in);
-            System.out.println("Insert a year:");
-            try{
-            if (input.hasNextInt() ) {
-                int anno = input.nextInt();
-                if(anno >= 2008){
-                    List<StreamRecordDTO> result = stub.getSongsByYear(anno);
-                    if(result.size() == 0){
-                        System.out.println("In the year " + anno + " either you haven't listened to " + result.size() + " songs or there are no datas for this year ");
-                    }
-                    else
-                    System.out.println("In the year " + anno + " you've listened to " + result.size() + " songs!");
-                }
-                else
-                throw new Exception("Invalid year, 2008 minimum");
-            } 
-            else
-            throw new Exception("Invalid Input, instert a year");
-        } catch(Exception e) {
-                System.out.println(e.getMessage());
-                //input.next(); // cleans the input
-            }
             
+            Scanner input = new Scanner(System.in);
+            
+
+            
+            // 2. Ciclo del Menu
+            boolean running = true;
+            while (running) {
+                System.out.println("\n--- MENU ---");
+                System.out.println("1. How many songs have you listened in a specific year");
+                System.out.println("0. Exit");
+                System.out.print("Choice: ");
+
+                if (input.hasNextInt()) {
+                    int choice = input.nextInt();
+
+                    switch (choice) {
+                        case 1 -> {
+                            System.out.print("Insert a year: ");
+                            if (input.hasNextInt()) {
+                                int anno = input.nextInt();
+                                try {
+                                    
+                                    List<StreamRecordDTO> result = stub.getSongsByYear(anno); 
+                                    
+                                    if (result.isEmpty()) {
+                                        System.out.println("In the year " + anno + " no songs found.");
+                                    } else {
+                                        System.out.println("In the year " + anno + " you've listened to " + result.size() + " songs!");
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("Server Error: " + e.getMessage());
+                                }
+                            } else {
+                                System.out.println("Invalid year format.");
+                                input.next(); // Pulisce buffer
+                            }
+                        }
+                        
+                        case 0 -> {
+                            System.out.println("Exiting...");
+                            running = false;
+                        }
+
+                        default -> System.out.println("Invalid choice, try again.");
+                    }
+                } else {
+                    // Se l'utente scrive lettere invece di numeri nel menu
+                    String junk = input.next();
+                    System.out.println("Invalid input: " + junk);
+                }
+            } // Fine while
+            
+            input.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-}
+    }
 }

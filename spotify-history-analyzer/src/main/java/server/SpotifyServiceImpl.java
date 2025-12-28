@@ -20,12 +20,15 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
         super();
     }
 
-    public List<StreamRecordDTO> getSongsByYear(int anno){
+    public List<StreamRecordDTO> getSongsByYear(int anno) throws RemoteException{
         
+        List<StreamRecordDTO> filteredSongs = new ArrayList<>();
+
+        if(anno >= 2008){
+
         Gson gson = new Gson();
         String folderPath = "Spotify Extended Streaming History";
         File folder = new File (folderPath);
-        List<StreamRecordDTO> filteredSongs = new ArrayList<>();
 
         if(!folder.exists() || !folder.isDirectory()){
             System.out.println("Errore: Cartella non trovata: " + folder.getAbsolutePath());
@@ -60,6 +63,10 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
                 }
             }
         }
+    }
+    else{
+        System.out.println("Invalid year, 2008 minimum");
+    }
         return filteredSongs;
     }
 }
