@@ -2,13 +2,10 @@ package client;
 
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import common.SessionDTO;
 import common.SpotifyService;
-import common.StreamRecordDTO;
 import common.Token;
 
 /**
@@ -21,7 +18,7 @@ public class Client {
     public Client(String user, SpotifyService serv) {
         this.user = user;
         service = serv;
-        this.session = new SessionDTO(new ArrayList<>(), new ArrayList<>());
+        this.session = new SessionDTO();
     }
 
     public void run() {
@@ -56,12 +53,12 @@ public class Client {
                                 int anno = input.nextInt();
                                 try {
                                     
-                                    List<StreamRecordDTO> result = service.getSongsByYear(token, anno, session); 
+                                    session  = service.getSongsByYear(token, anno, session); 
                                     
-                                    if (result.isEmpty()) {
+                                    if (session.currentResult().isEmpty()) {
                                         System.out.println("In the year " + anno + " no songs found.");
                                     } else {
-                                        System.out.println("[" + user +"]" + "In the year " + anno + " you've listened to " + result.size() + " songs!");
+                                        System.out.println("[" + user +"]" + "In the year " + anno + " you've listened to " + session.currentResult().size() + " songs!");
                                     }
                                 } catch (Exception e) {
                                     System.out.println("Server Error: " + e.getMessage());

@@ -24,7 +24,7 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
         super();
     }
     
-    public List<StreamRecordDTO> getSongsByYear(Token token, int anno, SessionDTO currentSession) throws RemoteException{
+    public SessionDTO getSongsByYear(Token token, int anno, SessionDTO currentSession) throws RemoteException{
 
         if(!tokenStore.isValid(token.payload()) || !tokenStore.isValidSignature(token)){
             System.out.println("[Server] Access denied, invalid or expired token.");
@@ -42,7 +42,7 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
 
         if(!folder.exists() || !folder.isDirectory()){
             System.out.println("Errore: Cartella non trovata: " + folder.getAbsolutePath());
-            return filteredSongs;
+            return new SessionDTO(currentSession.currentResult(),currentSession.history());
         }
         File[] listOfFiles = folder.listFiles();
         List<String> targetFiles = new ArrayList<>();
@@ -79,7 +79,7 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
     }
         currentSession.currentResult().addAll(filteredSongs);
         currentSession.history().add("In the year " + anno + " you've listened to " + filteredSongs.size() + " songs!");
-        return filteredSongs;
+        return new SessionDTO(currentSession.currentResult(),currentSession.history());
     
 }
 
