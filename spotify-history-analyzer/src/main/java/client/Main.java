@@ -12,7 +12,7 @@ public class Main {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         SpotifyService stub = (SpotifyService) registry.lookup("Spotifyservice");
         Scanner input = new Scanner(System.in);
-        System.out.print("\n Username: ");
+        System.out.print("Username: ");
         String user = input.next();
         Client test = new Client(user, stub);
         test.run();

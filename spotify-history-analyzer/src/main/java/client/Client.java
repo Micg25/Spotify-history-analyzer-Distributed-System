@@ -51,11 +51,17 @@ public class Client {
                             System.out.print("Insert a year: ");
                             if (input.hasNextInt()) {
                                 int anno = input.nextInt();
+                                String opid="2"+String.valueOf(anno);
                                 try {
                                     
                                     session  = service.getSongsByYear(token, anno, session); 
                                     
                                     if (session.currentResult().isEmpty()) {
+                                        if(session.history().containsKey(opid)){
+                                            String oldMessage = session.history().get(opid);
+                                            System.out.println("CACHE HIT!: "+oldMessage);
+                                            break;
+                                        }
                                         System.out.println("In the year " + anno + " no songs found.");
                                     } else {
                                         System.out.println("[" + user +"]" + "In the year " + anno + " you've listened to " + session.currentResult().size() + " songs!");
@@ -70,7 +76,11 @@ public class Client {
                         }
                         
                         case 3 -> {
-                            System.out.println(service.showHistory(session));
+                            
+                            for(String result : service.showHistory(session).values()){
+                                System.out.println(result);
+                            }
+                            
                         }
                         case 0 -> {
                             System.out.println("Exiting...");

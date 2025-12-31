@@ -8,6 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 
@@ -25,6 +26,13 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
     }
     
     public SessionDTO getSongsByYear(Token token, int anno, SessionDTO currentSession) throws RemoteException{
+
+        String opid="2"+String.valueOf(anno);
+
+        if (currentSession.history().containsKey(opid)) {
+            return new SessionDTO(new ArrayList<>(), currentSession.history());
+        }
+
 
         if(!tokenStore.isValid(token.payload()) || !tokenStore.isValidSignature(token)){
             System.out.println("[Server] Access denied, invalid or expired token.");
@@ -78,7 +86,7 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
         System.out.println("Invalid year, 2008 minimum");
     }
         currentSession.currentResult().addAll(filteredSongs);
-        currentSession.history().add("In the year " + anno + " you've listened to " + filteredSongs.size() + " songs!");
+        currentSession.history().put(String.valueOf(2)+String.valueOf(anno),"In the year " + anno + " you've listened to " + filteredSongs.size() + " songs!");
         return new SessionDTO(currentSession.currentResult(),currentSession.history());
     
 }
@@ -91,7 +99,7 @@ public class SpotifyServiceImpl extends UnicastRemoteObject implements SpotifySe
         return token; // Restituisce il token al Client
         }   
 
-    public List<String> showHistory(SessionDTO currentSession) throws RemoteException{
+    public Map<String, String> showHistory(SessionDTO currentSession) throws RemoteException{
 
         return currentSession.history();
         
