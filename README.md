@@ -1,5 +1,8 @@
 🎵 Spotify History Analyzer - Distributed System
 
+<img width="1268" height="412" alt="Screenshot from 2026-01-16 11-24-36" src="https://github.com/user-attachments/assets/0f4f7fa4-e095-4d6a-92a6-9646ca98d8de" />
+
+
 A distributed application built with Java RMI (Remote Method Invocation) designed to parse and analyze Spotify Extended Streaming History data. This project demonstrates key distributed systems design patterns, focusing on stateless server architecture and secure communication.
 
     ⚠️ Note: This project is currently under active development. Features and architecture are subject to change.
