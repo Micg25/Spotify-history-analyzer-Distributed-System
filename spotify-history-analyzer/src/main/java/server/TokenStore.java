@@ -1,18 +1,20 @@
 package server;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import common.Token;
+
 /**
  * TokenStore holds a list of Tokens, which could be shared among several
  * services in the distributed system.
  */
 public class TokenStore {
     private static final TokenStore instance = new TokenStore();
-    private List<Token> generatedTokens = new ArrayList<>();
+    
+    private List<Token> generatedTokens = new CopyOnWriteArrayList<>();
 
     private TokenStore() {
     }
